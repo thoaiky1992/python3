@@ -25,3 +25,13 @@ Start the Application
 ```shell
 python3 main.py
 ```
+
+Run Celery worker
+```shell
+celery -A libraries.celery_app worker --loglevel=info
+```
+
+[Optional] Run Celery beat if you want to see the scheduled job running
+```shell
+celery -A libraries.celery_app beat --loglevel=info
+```
