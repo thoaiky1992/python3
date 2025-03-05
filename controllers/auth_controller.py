@@ -1,5 +1,4 @@
 from flask import request
-from services.prisma_service import prismaService
 from libraries.logger import logger
 from libraries.http_response import HttpResponse
 import bcrypt
@@ -10,15 +9,17 @@ from services.user_service import UserService
 from libraries.route import controller, route
 from validation.auth.login_schema import AuthLoginchema
 from validation.auth.register_schema import AuthRegisterSchema
+from dependency_injector.wiring import Provide, inject
+from libraries.app_container import AppContainer
 
 salt = bcrypt.gensalt()
 
 
 @controller("auth")
 class AuthController:
-
-    def __init__(self):
-        self.userService = UserService()
+    @inject
+    def __init__(self, user_service: UserService = Provide[AppContainer.user_service]):
+        self.userService = user_service
 
     @route("register", methods=["POST"], validate_schema=AuthRegisterSchema)
     def register(self):
@@ -31,18 +32,17 @@ class AuthController:
                 )
             hashed_password = bcrypt.hashpw(data["password"].encode("utf-8"), salt)
             data["password"] = hashed_password.decode("utf-8")
-            user = prismaService.client.user.create(data=data)
+            user = self.userService.create(data=data)
             return HttpResponse(data=user.model_dump(), statusCode=200)
         except Exception as e:
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("login", methods=["POST"], validate_schema=AuthLoginchema, is_auth=True)
+    @route("login", methods=["POST"], validate_schema=AuthLoginchema)
     def login(self):
         try:
             body = request.get_json()
-            email = body["email"]
-            user = prismaService.client.user.find_first(where={"email": email})
+            user = self.userService.findOneByEmail(body["email"])
             if user is None:
                 return HttpResponse(
                     message=f"The account with this email haven't been existed",
