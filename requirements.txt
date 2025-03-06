@@ -11,10 +11,12 @@ click==8.1.8
 click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
+dependency-injector==4.46.0
 dnspython==2.7.0
 email_validator==2.2.0
 exceptiongroup==1.2.2
 Flask==3.1.0
+gevent==24.11.1
 greenlet==3.1.1
 h11==0.14.0
 httpcore==1.0.7

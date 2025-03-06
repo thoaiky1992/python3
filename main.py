@@ -3,6 +3,7 @@ from routes.main_routes import registerRoutes
 from libraries.app_container import AppContainer
 from utils.get_controller_modules import get_controller_modules
 import os
+from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__)
 
@@ -16,4 +17,11 @@ container.wire(modules=[__name__, *controller_modules])
 registerRoutes(app)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, threaded=True)
+    py_env = os.getenv("PY_ENV")
+    port = int(os.getenv("PORT") or 4000)
+
+    if py_env == "prod":
+        http_server = WSGIServer(("0.0.0.0", port), app)
+        http_server.serve_forever()
+    else:
+        app.run(debug=True, port=port, host="0.0.0.0", threaded=True)
