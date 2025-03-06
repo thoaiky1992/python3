@@ -20,6 +20,7 @@ services:
           memory: 512M
     networks:
       - python-network
+    restart: unless-stopped
   pgbouncer:
     image: bitnami/pgbouncer
     container_name: pgbouncer
@@ -38,6 +39,7 @@ services:
       - python-network
     depends_on:
       - db
+    restart: unless-stopped
 
   adminer:
     image: adminer
@@ -61,6 +63,23 @@ services:
       - python-network
     env_file:
       - .env
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "4000:4000"
+    environment:
+      - ENV=production
+    depends_on:
+      - db
+      - pgbouncer
+      - redis
+    restart: unless-stopped
+    networks:
+      - python-network
 
 networks:
   python-network:
