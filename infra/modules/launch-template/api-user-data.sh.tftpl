@@ -1,0 +1,12 @@
+#!/bin/bash
+set -ex
+
+echo ECS_CLUSTER=${ECS_CLUSTER_NAME} >> /etc/ecs/ecs.config
+
+# Tạo swapfile chỉ khi chưa có
+if ! swapon --show | grep /swapfile; then
+  sudo fallocate -l 2G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+fi

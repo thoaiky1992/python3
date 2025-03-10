@@ -171,3 +171,11 @@ cython_debug/
 .pypirc
 postgres-data
 cache-redis
+
+
+# terraform
+*.pem
+terraform.*
+.terraform*
+*.tfvars
+.DS_Store

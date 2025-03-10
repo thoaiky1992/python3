@@ -1,0 +1,30 @@
+#!/bin/bash
+set -ex
+
+echo ECS_CLUSTER=${ECS_CLUSTER_NAME} >> /etc/ecs/ecs.config
+
+# Tạo swapfile chỉ khi chưa có
+if ! swapon --show | grep /swapfile; then
+  sudo fallocate -l 2G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+fi
+
+# Format EBS volume nếu chưa có filesystem
+if ! blkid /dev/xvdf; then
+  mkfs -t ext4 /dev/xvdf
+fi
+
+# Tạo thư mục mount
+mkdir -p /mnt/postgres-data
+
+# Mount volume vào thư mục đã tạo
+mount /dev/xvdf /mnt/postgres-data
+
+# Thêm vào /etc/fstab để tự động mount lại sau reboot
+echo "/dev/xvdf /mnt/postgres-data ext4 defaults,nofail 0 2" >> /etc/fstab
+
+# Cấp quyền cho thư mục mount
+sudo chown -R ec2-user:ec2-user /mnt/postgres-data
+sudo chmod 770 /mnt/postgres-data
