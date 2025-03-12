@@ -7,6 +7,6 @@ output "pgbouncer" {
 output "redis" {
   value = aws_ecs_service.ecs_redis_service
 }
-output "api" {
-  value = aws_ecs_service.ecs_api_service
-}
+# output "api" {
+#   value = aws_ecs_service.ecs_api_service
+# }

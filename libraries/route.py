@@ -1,8 +1,9 @@
 from functools import wraps
 from typing import Optional
 from pydantic import BaseModel
-import re
+from utils.string import normalize_path
 from libraries.view_func_handler import view_func_handler
+from flask import Flask
 
 
 def controller(base_path: str):
@@ -14,8 +15,8 @@ def controller(base_path: str):
 
 
 def route(
-    path: str,
-    methods: list[str],
+    path: str = "",
+    method: str = "GET",
     validate_schema: Optional[BaseModel] = None,
     is_auth: bool = False,
 ):
@@ -25,7 +26,7 @@ def route(
             return func(*args, **kwargs)
 
         wrapper.route_path = path
-        wrapper.route_methods = methods
+        wrapper.route_method = method
         wrapper.validate_schema = validate_schema
         wrapper.is_auth = is_auth
         return wrapper
@@ -33,14 +34,7 @@ def route(
     return decorator
 
 
-def normalize_path(prefix: str, path: str = "") -> str:
-    str = "/" + prefix.strip("/")
-    if path:
-        str += "/" + path.strip("/")
-    return re.sub(r"/+", "/", str)
-
-
-def register_routes(app, controllers):
+def register_routes(app: Flask, controllers):
     for controller in controllers:
         c = controller()
         for attr_name in dir(c):
@@ -48,7 +42,7 @@ def register_routes(app, controllers):
             if (
                 callable(attr)
                 and hasattr(attr, "route_path")
-                and hasattr(attr, "route_methods")
+                and hasattr(attr, "route_method")
             ):
                 base_path = normalize_path("api", c.base_path)
                 end_point = normalize_path(base_path, attr.route_path)
@@ -60,5 +54,5 @@ def register_routes(app, controllers):
                         validate_schema=attr.validate_schema,
                         is_auth=attr.is_auth,
                     ),
-                    methods=attr.route_methods,
+                    methods=[attr.route_method],
                 )

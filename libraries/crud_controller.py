@@ -11,7 +11,7 @@ class CrudController(Generic[S]):
     def __init__(self, service: S):
         self.service = service
 
-    @route("", methods=["GET"])
+    @route("", method="GET")
     def findMany(self):
         try:
             records = self.service.findMany()
@@ -20,7 +20,7 @@ class CrudController(Generic[S]):
             logger.exception(e)  # like calling logging.error(e, exc_info=True)
             return HttpResponse(statusCode=500)
 
-    @route("<int:id>", methods=["GET"])
+    @route("<int:id>", method="GET")
     def findOne(self, id: int):
         try:
             record = self.service.findOne(id)
@@ -31,7 +31,7 @@ class CrudController(Generic[S]):
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("", methods=["POST"])
+    @route("", method="POST")
     def create(self):
         try:
             data = request.get_json()
@@ -41,7 +41,7 @@ class CrudController(Generic[S]):
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("bulk-create", methods=["POST"])
+    @route("bulk-create", method="POST")
     def createMany(self):
         try:
             data = request.get_json()
@@ -51,7 +51,7 @@ class CrudController(Generic[S]):
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("<int:id>", methods=["PUT"])
+    @route("<int:id>", method="PUT")
     def update(self, id: int):
         try:
             data = request.get_json()
@@ -61,7 +61,7 @@ class CrudController(Generic[S]):
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("", methods=["PUT"])
+    @route("", method="PUT")
     def updateMany(self):
         try:
             data = request.get_json()
@@ -71,7 +71,7 @@ class CrudController(Generic[S]):
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("<int:id>", methods=["DELETE"])
+    @route("<int:id>", method="DELETE")
     def delete(self, id):
         try:
             record = self.service.findOne(id)
@@ -83,7 +83,7 @@ class CrudController(Generic[S]):
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("", methods=["DELETE"])
+    @route("", method="DELETE")
     def deleteMany(self):
         try:
             data = request.get_json()

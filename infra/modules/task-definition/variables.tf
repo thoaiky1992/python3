@@ -13,7 +13,7 @@ variable "region" {
 variable "tag_version" {
   type = string
 }
-variable "ecr" {
+variable "aws_ecr" {
   type = object({
     api = object({ url = string })
   })

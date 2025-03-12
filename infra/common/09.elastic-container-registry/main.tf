@@ -10,4 +10,6 @@ resource "aws_ecr_repository" "ecr_api" {
     prevent_destroy = false
     ignore_changes  = [name]
   }
+
+  force_delete = true
 }

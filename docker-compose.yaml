@@ -64,24 +64,24 @@ services:
     env_file:
       - .env
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - BUILD_TYPE=docker # docker | prod | dev
-    container_name: app
-    ports:
-      - "4000:4000"
-    environment:
-      - ENV=production
-    depends_on:
-      - db
-      - pgbouncer
-      - redis
-    restart: unless-stopped
-    networks:
-      - python-network
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       - BUILD_TYPE=docker # docker | prod | dev
+  #   container_name: app
+  #   ports:
+  #     - "4000:4000"
+  #   environment:
+  #     - PY_ENV=dev # dev | prod
+  #   depends_on:
+  #     - db
+  #     - pgbouncer
+  #     - redis
+  #   restart: unless-stopped
+  #   networks:
+  #     - python-network
 
 networks:
   python-network:

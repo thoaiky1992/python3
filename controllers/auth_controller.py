@@ -10,7 +10,7 @@ from libraries.route import controller, route
 from validation.auth.login_schema import AuthLoginchema
 from validation.auth.register_schema import AuthRegisterSchema
 from dependency_injector.wiring import Provide, inject
-from libraries.app_container import AppContainer
+from libraries.app_container import AppContainer, appContainerInstance
 
 salt = bcrypt.gensalt()
 
@@ -21,7 +21,7 @@ class AuthController:
     def __init__(self, user_service: UserService = Provide[AppContainer.user_service]):
         self.userService = user_service
 
-    @route("register", methods=["POST"], validate_schema=AuthRegisterSchema)
+    @route("register", method="POST", validate_schema=AuthRegisterSchema)
     def register(self):
         try:
             data = request.get_json()
@@ -38,7 +38,7 @@ class AuthController:
             logger.exception(e)
             return HttpResponse(statusCode=500)
 
-    @route("login", methods=["POST"], validate_schema=AuthLoginchema)
+    @route("login", method="POST", validate_schema=AuthLoginchema)
     def login(self):
         try:
             body = request.get_json()
@@ -68,8 +68,10 @@ class AuthController:
             user_data = user.model_dump()
             if "password" in user_data:
                 del user_data["password"]
-            data = {"user": user_data, "token": token}
+            data = {"user": user_data, "token": token, "exp": timestamp}
             return HttpResponse(data=data, statusCode=200)
         except Exception as e:
             logger.exception(e)
             return HttpResponse(statusCode=500)
+
+appContainerInstance.wire(modules=[__name__])
