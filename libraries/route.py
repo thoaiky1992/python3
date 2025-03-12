@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 import re
 from libraries.view_func_handler import view_func_handler
+from flask import Flask
 
 
 def controller(base_path: str):
@@ -14,8 +15,8 @@ def controller(base_path: str):
 
 
 def route(
-    path: str,
-    methods: list[str],
+    path: str = "",
+    methods: list[str] = ["GET"],
     validate_schema: Optional[BaseModel] = None,
     is_auth: bool = False,
 ):
@@ -40,7 +41,7 @@ def normalize_path(prefix: str, path: str = "") -> str:
     return re.sub(r"/+", "/", str)
 
 
-def register_routes(app, controllers):
+def register_routes(app: Flask, controllers):
     for controller in controllers:
         c = controller()
         for attr_name in dir(c):

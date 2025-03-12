@@ -17,14 +17,19 @@ if ! blkid /dev/xvdf; then
 fi
 
 # Tạo thư mục mount
-mkdir -p /mnt/postgres-data
+mkdir -p /mnt/data
 
 # Mount volume vào thư mục đã tạo
-mount /dev/xvdf /mnt/postgres-data
+mount /dev/xvdf /mnt/data
 
 # Thêm vào /etc/fstab để tự động mount lại sau reboot
-echo "/dev/xvdf /mnt/postgres-data ext4 defaults,nofail 0 2" >> /etc/fstab
+echo "/dev/xvdf /mnt/data ext4 defaults,nofail 0 2" >> /etc/fstab
 
 # Cấp quyền cho thư mục mount
-sudo chown -R ec2-user:ec2-user /mnt/postgres-data
-sudo chmod 770 /mnt/postgres-data
+sudo chown -R ec2-user:ec2-user /mnt/data
+sudo chmod -R 770 /mnt/data
+
+
+mkdir /mnt/data/pgbouncer
+sudo chown -R ec2-user:ec2-user /mnt/data/pgbouncer
+echo "\"dev\" \"ior2023\"" > /mnt/data/pgbouncer/userlist.txt

@@ -1,4 +1,4 @@
-output "target_group" {
+output "lb_target_groups" {
   value = {
     api = {
       arn = aws_lb_target_group.ecs_api_target_group.arn

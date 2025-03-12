@@ -11,9 +11,3 @@ if ! swapon --show | grep /swapfile; then
   sudo swapon /swapfile
 fi
 
-
-mkdir /home/ec2-user/pgbouncer-data
-
-sudo chown $USER:$USER /home/ec2-user/pgbouncer-data
-
-echo "dev ior2023" > /home/ec2-user/pgbouncer-data/userlist.txt
