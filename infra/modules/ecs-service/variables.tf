@@ -1,10 +1,9 @@
 variable "ecs_cluster" {
   description = "ECS cluster details"
   type = object({
-    db        = object({ id = string, name = string })
-    pgbouncer = object({ id = string, name = string })
-    redis     = object({ id = string, name = string })
-    api       = object({ id = string, name = string })
+    db = object({ id = string, name = string })
+    redis = object({ id = string, name = string })
+    api = object({ id = string, name = string })
   })
 }
 
@@ -34,11 +33,18 @@ variable "security_groups" {
   type = any
 }
 
-variable "service_discovery" {
+variable "cloud_map" {
   type = object({
-    db_service_discovery_service        = object({ arn = string })
-    pgbouncer_service_discovery_service = object({ arn = string })
-    redis_service_discovery_service     = object({ arn = string })
-    api_service_discovery_service       = object({ arn = string })
+    aws_service_discovery_http_namespace = object({
+      arn = string
+    })
   })
 }
+variable "lb_target_groups" {
+  type = object({
+    api = object({
+      arn =  string
+    })
+  })
+}
+

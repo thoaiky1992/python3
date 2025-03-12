@@ -29,13 +29,19 @@ output "bastion_host" {
 output "ecr" {
   value = module.ecr
 }
-output "service_discovery" {
+# output "service_discovery" {
+#   value = {
+#     aws_service_discovery_private_dns_namespace = module.service_discovery.aws_service_discovery_private_dns_namespace
+#     db_service_discovery_service                = module.service_discovery.db_service_discovery_service
+#     pgbouncer_service_discovery_service         = module.service_discovery.pgbouncer_service_discovery_service
+#     api_service_discovery_service               = module.service_discovery.api_service_discovery_service
+#     redis_service_discovery_service             = module.service_discovery.redis_service_discovery_service
+#   }
+# }
+
+output "cloud_map" {
   value = {
-    aws_service_discovery_private_dns_namespace = module.service_discovery.aws_service_discovery_private_dns_namespace
-    db_service_discovery_service                = module.service_discovery.db_service_discovery_service
-    pgbouncer_service_discovery_service         = module.service_discovery.pgbouncer_service_discovery_service
-    api_service_discovery_service               = module.service_discovery.api_service_discovery_service
-    redis_service_discovery_service             = module.service_discovery.redis_service_discovery_service
+    aws_service_discovery_http_namespace = module.cloud_map.aws_service_discovery_http_namespace
   }
 }
 

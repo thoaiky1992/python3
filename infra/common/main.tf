@@ -84,12 +84,12 @@ module "bastion_host" {
 }
 
 module "ecr" {
-  source      = "./10.elastic-container-registry"
+  source      = "./09.elastic-container-registry"
   environment = var.environment
 }
 
-module "service_discovery" {
-  source      = "./11.service-discovery"
+module "cloud_map" {
+  source      = "./10.cloud-map"
   environment = var.environment
   vpc_id      = module.vpc.id
 }

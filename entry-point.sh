@@ -1,3 +1,2 @@
 #!/bin/bash
-
-prisma generate && prisma migrate deploy
+source .venv/bin/activate && prisma migrate deploy && python main.py

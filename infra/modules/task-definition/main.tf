@@ -15,8 +15,8 @@ resource "aws_ecs_task_definition" "ecs_db_task_definition" {
   }
 
   volume {
-    name      = "postgres-data"
-    host_path = "/mnt/postgres-data/pgdata"
+    name      = "pgdata"
+    host_path = "/mnt/data/pgdata"
   }
 
   container_definitions = jsonencode([
@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "ecs_db_task_definition" {
 
       mountPoints = [
         {
-          sourceVolume  = "postgres-data"
+          sourceVolume  = "pgdata"
           containerPath = "/var/lib/postgresql/data"
           readOnly      = false
         }
@@ -46,9 +46,8 @@ resource "aws_ecs_task_definition" "ecs_db_task_definition" {
       portMappings = [
         {
           containerPort = 5432
-          hostPort      = 5432
           protocol      = "tcp"
-          name          = "db-port"
+          name          = "db_port"
         }
       ]
       environment = [
@@ -103,8 +102,8 @@ resource "aws_ecs_task_definition" "ecs_pgbouncer_task_definition" {
   }
 
   volume {
-    name      = "pgbouncer-data"
-    host_path = "/home/ec2-user/pgbouncer-data/userlist.txt"
+    name      = "pgbouncer"
+    host_path = "/mnt/data/pgbouncer/userlist.txt"
   }
 
   container_definitions = jsonencode([
@@ -117,7 +116,7 @@ resource "aws_ecs_task_definition" "ecs_pgbouncer_task_definition" {
 
       mountPoints = [
         {
-          sourceVolume  = "pgbouncer-data"
+          sourceVolume  = "pgbouncer"
           containerPath = "/bitnami/userlist.txt"
           readOnly      = false
         }
@@ -131,18 +130,19 @@ resource "aws_ecs_task_definition" "ecs_pgbouncer_task_definition" {
           "awslogs-stream-prefix" = var.tag_version
         }
       }
+
       portMappings = [
         {
           containerPort = 6432
-          hostPort      = 6432
           protocol      = "tcp"
+          name          = "pgbouncer_port"
         }
       ]
 
       environment = [
         {
           name  = "POSTGRESQL_HOST"
-          value = "postgres.dev-service-discovery"
+          value = "db"
         },
         {
           name  = "POSTGRESQL_PASSWORD"
@@ -162,7 +162,7 @@ resource "aws_ecs_task_definition" "ecs_pgbouncer_task_definition" {
         },
         {
           name  = "PGBOUNCER_DSN_0"
-          value = "python=host=postgres.dev-service-discovery port=5432 dbname=python"
+          value = "python=host=db port=5432 dbname=python"
         },
       ]
     }
@@ -207,8 +207,8 @@ resource "aws_ecs_task_definition" "ecs_redis_task_definition" {
       portMappings = [
         {
           containerPort = 6379
-          hostPort      = 6379
           protocol      = "tcp"
+          name          = "redis_port"
         }
       ]
       command = [
@@ -242,7 +242,7 @@ resource "aws_ecs_task_definition" "ecs_api_task_definition" {
   container_definitions = jsonencode([
     {
       name      = "api"
-      image     = var.ecr.api.url
+      image     = "${var.aws_ecr.api.url}:${var.tag_version}"
       cpu       = 256
       memory    = 512
       essential = true
@@ -258,8 +258,8 @@ resource "aws_ecs_task_definition" "ecs_api_task_definition" {
       portMappings = [
         {
           containerPort = 4000
-          hostPort      = 4000
           protocol      = "tcp"
+          name          = "api_port"
         }
       ]
     }

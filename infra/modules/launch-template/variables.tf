@@ -28,7 +28,6 @@ variable "ecs_instance_role_profile_name" {
 variable "ecs_cluster" {
   type = object({
     db        = object({ id = string, name = string })
-    pgbouncer = object({ id = string, name = string })
     redis     = object({ id = string, name = string })
     api       = object({ id = string, name = string })
   })
