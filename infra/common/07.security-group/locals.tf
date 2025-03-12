@@ -40,6 +40,11 @@ locals {
       egress = [{ from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = ["0.0.0.0/0"] }]
     },
     {
+      name    = "redis-security-group"
+      ingress = [{ from_port = 6379, to_port = 6379, protocol = "tcp", cidr_blocks = ["10.0.0.0/16"] }, ]
+      egress  = [{ from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = ["0.0.0.0/0"] }]
+    },
+    {
       name    = "default-security-group"
       ingress = [{ from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = ["0.0.0.0/0"] }]
       egress  = [{ from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = ["0.0.0.0/0"] }]

@@ -1,6 +1,12 @@
-output "id" {
-  value = aws_ecs_cluster.ecs_cluster.id
+output "db" {
+  value = { id = aws_ecs_cluster.ecs_db_cluster.id, name = aws_ecs_cluster.ecs_db_cluster.name }
 }
-output "name" {
-  value = aws_ecs_cluster.ecs_cluster.name
+output "pgbouncer" {
+  value = { id = aws_ecs_cluster.ecs_pgbouncer_cluster.id, name = aws_ecs_cluster.ecs_pgbouncer_cluster.name }
+}
+output "redis" {
+  value = { id = aws_ecs_cluster.ecs_redis_cluster.id, name = aws_ecs_cluster.ecs_redis_cluster.name }
+}
+output "api" {
+  value = { id = aws_ecs_cluster.ecs_api_cluster.id, name = aws_ecs_cluster.ecs_api_cluster.name }
 }

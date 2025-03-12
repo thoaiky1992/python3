@@ -6,7 +6,9 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY .env.prod .env
+# BUILD_TYPE = dev | docker | prod
+ARG BUILD_TYPE
+COPY .env.${BUILD_TYPE} .env
 
 COPY . .
 

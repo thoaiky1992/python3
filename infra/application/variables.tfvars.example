@@ -1,0 +1,4 @@
+region        = "ap-southeast-1"
+tag_version   = "v.1.0.0"
+key_pair_name = "transcosmos-aws"
+environment   = "dev"

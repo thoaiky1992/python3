@@ -13,4 +13,9 @@ output "api" {
     id = aws_launch_template.ecs_api_launch_template.id
   }
 }
+output "redis" {
+  value = {
+    id = aws_launch_template.ecs_redis_launch_template.id
+  }
+}
 

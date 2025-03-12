@@ -26,9 +26,11 @@ variable "ecs_instance_role_profile_name" {
 }
 
 variable "ecs_cluster" {
-  description = "ECS cluster names for the pgbouncer and db"
   type = object({
-    name = string
+    db        = object({ id = string, name = string })
+    pgbouncer = object({ id = string, name = string })
+    redis     = object({ id = string, name = string })
+    api       = object({ id = string, name = string })
   })
 }
 variable "tag_version" {

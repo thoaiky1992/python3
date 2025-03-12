@@ -156,11 +156,11 @@ resource "aws_ecs_task_definition" "ecs_pgbouncer_task_definition" {
           name  = "PGBOUNCER_AUTH_TYPE"
           value = "trust"
         },
-         {
+        {
           name  = "PGBOUNCER_USERLIST_FILE"
           value = "/bitnami/userlist.txt"
         },
-         {
+        {
           name  = "PGBOUNCER_DSN_0"
           value = "python=host=postgres.dev-service-discovery port=5432 dbname=python"
         },
@@ -169,4 +169,101 @@ resource "aws_ecs_task_definition" "ecs_pgbouncer_task_definition" {
   ])
 
   depends_on = [aws_cloudwatch_log_group.ecs_pgbouncer_log_group]
+}
+
+
+resource "aws_cloudwatch_log_group" "ecs_redis_log_group" {
+  name              = "${var.tag_version}/ecs/ecs-redis-task"
+  retention_in_days = 7
+}
+resource "aws_ecs_task_definition" "ecs_redis_task_definition" {
+  family             = "${replace(var.tag_version, ".", "-")}-ecs-redis-task"
+  network_mode       = "awsvpc"
+  execution_role_arn = var.ecs_task_execution_role.arn
+  cpu                = 256
+  memory             = 512
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
+
+  container_definitions = jsonencode([
+    {
+      name      = "redis"
+      image     = "redis:6.2-alpine"
+      cpu       = 256
+      memory    = 512
+      essential = true
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_redis_log_group.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = var.tag_version
+        }
+      }
+      portMappings = [
+        {
+          containerPort = 6379
+          hostPort      = 6379
+          protocol      = "tcp"
+        }
+      ]
+      command = [
+        "redis-server",
+        "--save", "60", "1",
+        "--loglevel", "warning",
+        "--requirepass", "redis_password"
+      ]
+    }
+  ])
+  depends_on = [aws_cloudwatch_log_group.ecs_redis_log_group]
+}
+
+
+resource "aws_cloudwatch_log_group" "ecs_api_log_group" {
+  name              = "${var.tag_version}/ecs/ecs-api-task"
+  retention_in_days = 7
+}
+resource "aws_ecs_task_definition" "ecs_api_task_definition" {
+  family             = "${replace(var.tag_version, ".", "-")}-ecs-api-task"
+  network_mode       = "awsvpc"
+  execution_role_arn = var.ecs_task_execution_role.arn
+  cpu                = 256
+  memory             = 512
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
+
+  container_definitions = jsonencode([
+    {
+      name      = "api"
+      image     = var.ecr.api.url
+      cpu       = 256
+      memory    = 512
+      essential = true
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_api_log_group.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = var.tag_version
+        }
+      }
+      portMappings = [
+        {
+          containerPort = 4000
+          hostPort      = 4000
+          protocol      = "tcp"
+        }
+      ]
+    }
+  ])
+
+  depends_on = [aws_cloudwatch_log_group.ecs_api_log_group]
 }

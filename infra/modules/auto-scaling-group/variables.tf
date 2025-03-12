@@ -11,17 +11,13 @@ variable "public_subnet_ids" {
 variable "launch_template" {
   description = "Launch templates for the ECS pgbouncer and Api"
   type = object({
-    pgbouncer = object({
-      id = string
-    })
-    db = object({
-      id = string
-    })
-    api = object({
-      id = string
-    })
+    pgbouncer = object({ id = string })
+    db        = object({ id = string })
+    api       = object({ id = string })
+    redis     = object({ id = string })
   })
 }
 variable "tag_version" {
   type = string
 }
+

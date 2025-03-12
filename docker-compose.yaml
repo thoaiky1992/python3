@@ -68,6 +68,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - BUILD_TYPE=docker # docker | prod | dev
     container_name: app
     ports:
       - "4000:4000"

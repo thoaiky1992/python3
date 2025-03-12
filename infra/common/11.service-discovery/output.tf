@@ -10,3 +10,6 @@ output "pgbouncer_service_discovery_service" {
 output "api_service_discovery_service" {
   value = aws_service_discovery_service.api
 }
+output "redis_service_discovery_service" {
+  value = aws_service_discovery_service.redis
+}
