@@ -16,6 +16,3 @@ class PrismaService:
     @property
     def client(self) -> Prisma:
         return self._client
-
-
-prismaService = PrismaService()

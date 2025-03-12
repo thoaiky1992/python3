@@ -1,17 +1,10 @@
 from flask import Flask
 from routes.main_routes import registerRoutes
-from libraries.app_container import AppContainer
-from utils.get_controller_modules import get_controller_modules
-import os
 from gevent.pywsgi import WSGIServer
+import os
+from prisma import Prisma
 
 app = Flask(__name__)
-
-# Register Container
-controllers_dir = os.path.join(os.path.dirname(__file__), "controllers")
-controller_modules = get_controller_modules(controllers_dir)
-container = AppContainer()
-container.wire(modules=[__name__, *controller_modules])
 
 # Register routes
 registerRoutes(app)
@@ -19,6 +12,9 @@ registerRoutes(app)
 if __name__ == "__main__":
     py_env = os.getenv("PY_ENV")
     port = int(os.getenv("PORT") or 4000)
+
+    db = Prisma(auto_register=True)
+    db.connect()
 
     if py_env == "prod":
         http_server = WSGIServer(("0.0.0.0", port), app)

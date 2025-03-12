@@ -1,5 +1,5 @@
 resource "aws_service_discovery_private_dns_namespace" "main" {
-  name        = "${var.environment}-service-discovery"
+  name        = "service-discovery"
   description = "Discovery Service"
   vpc         = var.vpc_id
   tags = {
@@ -16,7 +16,7 @@ resource "aws_service_discovery_service" "postgres" {
 
     dns_records {
       type = "A"
-      ttl  = 10
+      ttl  = 30
     }
 
     routing_policy = "MULTIVALUE"
@@ -35,7 +35,7 @@ resource "aws_service_discovery_service" "pgbouncer" {
 
     dns_records {
       type = "A"
-      ttl  = 10
+      ttl  = 30
     }
 
     routing_policy = "MULTIVALUE"
@@ -55,7 +55,7 @@ resource "aws_service_discovery_service" "api" {
 
     dns_records {
       type = "A"
-      ttl  = 10
+      ttl  = 30
     }
 
     routing_policy = "MULTIVALUE"
@@ -74,7 +74,7 @@ resource "aws_service_discovery_service" "redis" {
 
     dns_records {
       type = "A"
-      ttl  = 10
+      ttl  = 30
     }
 
     routing_policy = "MULTIVALUE"

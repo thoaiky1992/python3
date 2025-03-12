@@ -23,5 +23,6 @@ docker-compose.yml
 .git
 .gitignore
 
-postgres-data
-cache-redis
+postgres-data/
+cache-redis/
+infra/

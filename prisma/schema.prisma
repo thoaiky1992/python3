@@ -5,9 +5,10 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider             = "prisma-client-py"
-  recursive_type_depth = 5
-  interface            = "sync"
+  provider             = "prisma-client-py" // prisma-client-js => prisma-client-py
+  recursive_type_depth = 5 // prisma.user.find_first(include={'posts': {'include': {'comments': {'include': {'replies': True}}}}})
+  interface            = "sync" // await prisma.user.find_first(...) =>  prisma.user.find_first(...)
+  enable_experimental_decimal = true
 }
 
 datasource db {
@@ -17,10 +18,10 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  password String @db.Text
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String?
+  password String  @db.Text
 
   @@map("users")
 }

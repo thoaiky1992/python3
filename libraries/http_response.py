@@ -7,25 +7,22 @@ def HttpResponse(
     message: Optional[str] = None,
     statusCode: Optional[int] = 200,
 ):
-    result = {"statusCode": statusCode}
+    result = {"statusCode": statusCode, "data": data}
     match statusCode:
         case 401:
             result["message"] = "Unauthorized"
-            if message is not None:
-                result["message"] = message
-            return jsonify(result), statusCode
+            pass
+        case 403:
+            result["message"] = "Forbidden"
+            pass
         case 404:
             result["message"] = "Not found"
-            if message is not None:
-                result["message"] = message
-            return jsonify(result), statusCode
+            pass
         case 500:
-            if message is not None:
-                result["message"] = message
             result["message"] = "Internal Server Error"
-            return jsonify(result), statusCode
+            pass
         case default:
-            if message is not None:
-                result["message"] = message
-            result["data"] = data
-            return jsonify(result), statusCode
+            pass
+    if message is not None:
+        result["message"] = message
+    return jsonify(result), statusCode

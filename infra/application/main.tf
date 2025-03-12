@@ -60,12 +60,13 @@ module "auto_scaling_group" {
   tag_version        = var.tag_version
 }
 
+
 module "ecs_task_definition" {
   source                  = "../modules/task-definition"
   ecs_task_execution_role = data.terraform_remote_state.common.outputs.iam_role.ecs_task_execution_role
   region                  = var.region
   tag_version             = var.tag_version
-  ecr                     = data.terraform_remote_state.common.outputs.ecr
+  aws_ecr                 = data.terraform_remote_state.common.outputs.ecr
 }
 module "ecs_service" {
   source              = "../modules/ecs-service"
@@ -75,14 +76,7 @@ module "ecs_service" {
   subnets             = data.terraform_remote_state.common.outputs.subnets
   security_groups     = data.terraform_remote_state.common.outputs.security_groups
   service_discovery   = data.terraform_remote_state.common.outputs.service_discovery
+  lb_target_groups    = module.load_balancer.lb_target_groups
 
   depends_on = [module.ecs_task_definition]
 }
-
-# module "auto_scaling_ecs_api_task" {
-#   source      = "../modules/auto-scaling-ecs-task"
-#   ecs_service = module.ecs_service
-#   ecs_cluster = module.ecs_cluster
-#   tag_version = var.tag_version
-#   depends_on  = [module.ecs_service]
-# }

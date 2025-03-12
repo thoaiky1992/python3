@@ -1,38 +1,3 @@
-resource "aws_launch_template" "ecs_pgbouncer_launch_template" {
-  name          = "${var.tag_version}-ecs-pgbouncer-template"
-  image_id      = var.ami_id
-  instance_type = var.instance_type
-  key_name      = var.key_pair_name
-
-
-  network_interfaces {
-    associate_public_ip_address = false                                                 # Ensure this is false for private subnet
-    subnet_id                   = var.private_subnet_ids[0]                            # Replace with your private subnet ID
-    security_groups             = [var.security_groups["pgbouncer-security-group"].id] # Replace with your security group ID
-  }
-
-  iam_instance_profile {
-    name = var.ecs_instance_role_profile_name
-  }
-
-  block_device_mappings {
-    device_name = "/dev/xvda"
-    ebs {
-      volume_size = 30
-      volume_type = "gp2"
-    }
-  }
-
-  tag_specifications {
-    resource_type = "instance"
-    tags = {
-      Name = "${var.tag_version}-ecs-pgbouncer-instance"
-    }
-  }
-
-  user_data = base64encode(templatefile("${path.module}/pgbouncer-user-data.sh.tftpl", { ECS_CLUSTER_NAME = "${var.ecs_cluster.pgbouncer.name}" }))
-}
-
 resource "aws_launch_template" "ecs_db_launch_template" {
   name          = "${var.tag_version}-ecs-db-template"
   image_id      = var.ami_id
